@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Montserrat", sans-serif;
+  transition: all 0.2s linear;
+}
+
+.login {
+  background: url("./assets/images/patterdpad.png");
+  background-size: contain;
+}
+
+.register{
+  background: url('./assets/images/patternpad1.png');
+  background-size: contain;
+}
+
+.register_overlay{
+  position: absolute;
+  inset: 0;
+  background-color: white;
+  opacity: 0.4;
+}
+
+.navlink {
+  @apply flex items-center hover:bg-slate-100 px-8 py-2 my-2;
+}
+
+.message-container::-webkit-scrollbar {
+  background-color: rgb(176, 176, 176);
+  width: 5px;
+}
+
+.group-container::-webkit-scrollbar {
+  background-color: rgb(176, 176, 176);
+  width: 5px;
+}
+
+.story-container::-webkit-scrollbar {
+display: none;
+}
+
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+
+textarea::-webkit-scrollbar{
+  display: none;
+}

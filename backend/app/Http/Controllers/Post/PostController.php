@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ProcessPostCreation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+
 
 class PostController extends Controller
 {
@@ -25,26 +25,26 @@ class PostController extends Controller
     {
         $request->validate([
             'body' => 'string',
-            'attachment.*' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+            'attachment.*' => 'required|file|mimes:jpg,jpeg,png,mkv,mp4'
         ]);
 
-        print_r($request->attachment);
+        $userId = auth()->user()->id;
+        $body = $request->body;
+        $attachments = $request->file('attachment');
+        $attachmentPaths = [];
 
-        $post = auth()->user()->posts()->create([
-            'body' => $request->body,
-        ]);
-
-        if ($request->hasFile('attachment')) {
-            foreach ($request->file('attachment') as $attachment) {
+        if (!empty($attachments)) {
+            foreach ($attachments as $attachment) {
                 $name = uniqid() . '.' . $attachment->extension();
-                Storage::disk('local')->put($name, 'attachments');
-                $post->attachments()->create([
-                    'attachment' => $name,
-                    'caption' => 'test'
-                ]);
+                $directory = 'temp_attachments/' . $userId;
+                $path = $attachment->storeAs($directory, $name, 'local');
+                $attachmentPaths[] = $path;
             }
         }
-        return response()->noContent();
+
+        ProcessPostCreation::dispatch($userId, $body, $attachmentPaths);
+
+        return response()->json(['message' => 'Post creation in progress'], 202);
     }
 
     /**

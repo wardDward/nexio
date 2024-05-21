@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
             $table->string('attachment');
-            $table->longText('caption');
+            $table->longText('caption')->nullable();
             $table->timestamps();
         });
     }

@@ -10,7 +10,6 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { errorMessage, isLoading } = useSelector((state) => state.users);
 
   useEffect(() => {
@@ -29,11 +28,12 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     const res = await dispatch(login(formData));
-    console.log(res);
     if (res.meta.requestStatus === "fulfilled") {
       navigate("/");
     }
   };
+
+
 
   return (
     <div className="h-screen flex justify-center items-center login">

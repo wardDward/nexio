@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { clearState, createPost } from "../../../redux/feature/postSlice";
+import Attachments from "./Attachments";
 
 export default function CreatePostModal({ closeModal }) {
-  const [dragging, setDragging] = useState(false);
+  const [caption, setCaption] = useState("");
   const [files, setFiles] = useState([]);
-
-  const dispatch = useDispatch();
   const { isLoading, errorMessage } = useSelector((state) => state.posts);
+  const dispatch = useDispatch();
+  const captionRef = useRef();
+
+  useEffect(() => {
+    captionRef.current.focus();
+    
+  }, []);
 
   useEffect(() => {
     const body = document.querySelector("body");
@@ -39,42 +44,10 @@ export default function CreatePostModal({ closeModal }) {
     };
   }, [files]);
 
-  // draggable function
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const droppedFiles = [...e.dataTransfer.files];
-    setFiles((prevFiles) => [...prevFiles, ...droppedFiles]);
-
-    setDragging(false);
-  };
-
   const handleFiles = (e) => {
     const chosenFiles = [...e.target.files];
     setFiles((prevFiles) => [...prevFiles, ...chosenFiles]);
   };
-
-  useEffect(() => {
-    console.log(files);
-  }, [files]);
 
   const closePostModal = () => {
     if (files.length > 0) {
@@ -90,13 +63,11 @@ export default function CreatePostModal({ closeModal }) {
     }
   };
 
-  const renderImage = (file) => {
-    return URL.createObjectURL(file);
-  };
-
   const submitPost = async (e) => {
     e.preventDefault();
-    const res = await dispatch(createPost({ body: "test", attachment: files }));
+    const res = await dispatch(
+      createPost({ body: caption, attachment: files })
+    );
     console.log(res);
     console.log(errorMessage);
 
@@ -145,77 +116,19 @@ export default function CreatePostModal({ closeModal }) {
             </div>
           </div>
           <textarea
+            ref={captionRef}
             name="body"
             id="body"
+            onChange={(e) => setCaption(e.target.value)}
+            value={caption}
             className="w-full mt-[10px] text-sm resize-none max-h-[100px] p-2 overflow-y-scroll outline-none"
             placeholder="What's on your mind, Edward?"
           ></textarea>
-          {files.length === 0 && (
-            <div className="h-[250px] border-[3px] rounded-md p-2">
-              <label
-                className="cursor-pointer bg-slate-200/70 h-full flex flex-col justify-center items-center"
-                htmlFor="file"
-                onDragEnter={handleDragEnter}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-              >
-                <CloudDownloadIcon sx={{ fontSize: 60 }} />
-                <span className="text-gray-600 text-sm">
-                  Drag & Drop files here or click to browse
-                </span>
-                <input
-                  onChange={(e) => handleFiles(e)}
-                  className="hidden"
-                  type="file"
-                  name="file"
-                  id="file"
-                  multiple
-                />
-              </label>
-            </div>
-          )}
-          {files.length > 0 && (
-            <div className="w-full max-w-5xl p-2 mx-auto h-[500px]">
-              <div
-                className={`grid ${
-                  files.length === 1
-                    ? "grid-cols-1 grid-rows-1"
-                    : files.length === 2
-                    ? "grid-cols-2 grid-rows-1"
-                    : files.length === 3
-                    ? "grid-cols-2 grid-rows-2"
-                    : "grid-cols-2 grid-rows-2"
-                } gap-5 h-full`}
-              >
-                {files.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`${
-                      files.length === 1
-                        ? "col-span-1 row-span-1"
-                        : files.length === 2
-                        ? "col-span-1 row-span-1"
-                        : files.length === 3
-                        ? index === 2
-                          ? "col-span-2 row-span-1"
-                          : "col-span-1 row-span-1"
-                        : index === 3
-                        ? "col-span-1 row-span-1"
-                        : "col-span-1 row-span-1"
-                    }`}
-                  >
-                    <img
-                      src={renderImage(image)}
-                      alt={`Image ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
+          <Attachments
+            files={files}
+            setFiles={setFiles}
+            handleFiles={handleFiles}
+          />
           <div className="flex items-center justify-between my-4 px-2 border-[1px] border-slate-400 py-3 rounded-md">
             <h5 className="text-sm font-medium">Add to your post</h5>
             <div>
@@ -236,9 +149,31 @@ export default function CreatePostModal({ closeModal }) {
           )}
           <button
             type="submit"
-            className="w-full text-gray-700 bg-gray-300 py-2 rounded-lg"
+            className="w-full text-gray-700 bg-gray-300 py-2 rounded-lg flex justify-center items-center"
           >
-            Post
+            {isLoading && (
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            )}
+            <span>Post</span>
           </button>
         </form>
       </div>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Post;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostResource;
 use App\Jobs\ProcessPostCreation;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 
@@ -14,17 +16,23 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+
+        $following_id = auth()->user()->following()->pluck('follower_id');
+
+        $posts = Post::whereIn('user_id', $following_id)
+            ->where('user_id', '!=', auth()->user()->id)
+            ->with(['user'])->orderBy('created_at', 'desc')->get();
+
+        return PostResource::collection($posts);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-
     public function store(Request $request)
     {
         $request->validate([
-            'body' => 'string',
+            // 'body' => 'string',
             'attachment.*' => 'required|file|mimes:jpg,jpeg,png,mkv,mp4'
         ]);
 

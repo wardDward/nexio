@@ -35,38 +35,40 @@ class ProcessPostCreation implements ShouldQueue
     {
         $post = Post::create([
             'user_id' => $this->userId,
-            'body' => $this->body
+            'body' => $this->body,
         ]);
 
-        foreach ($this->attachmentPaths as $path) {
-            $file = Storage::disk('local')->get($path);
-            $extension = pathinfo($path, PATHINFO_EXTENSION);
-            $name = uniqid() . '.' . $extension;
-            $directory = 'users_attachments/' . $this->userId . '/attachments' . '/' . $post->id;
-            $storedPath = $directory . '/' . $name;
+        if (!empty($this->attachmentPaths)) {
+            foreach ($this->attachmentPaths as $path) {
+                $file = Storage::disk('local')->get($path);
+                $extension = pathinfo($path, PATHINFO_EXTENSION);
+                $name = uniqid() . '.' . $extension;
+                $directory = 'users_attachments/' . $this->userId . '/attachments' . '/' . $post->id;
+                $storedPath = $directory . '/' . $name;
 
-            if (!Storage::disk('local')->exists($directory)) {
-                Storage::disk('local')->makeDirectory('test_folder');
+                if (!Storage::disk('local')->exists($directory)) {
+                    Storage::disk('local')->makeDirectory($directory);
+                }
+
+                Storage::disk('local')->put($storedPath, $file);
+
+                $post->attachments()->create([
+                    'attachment' => $storedPath,
+                ]);
             }
 
-            Storage::disk('local')->put($storedPath, $file);
+            $temp_dir = 'temp_attachments/' . $this->userId;
 
-            $post->attachments()->create([
-                'attachment' => $storedPath,
-                'caption' => 'test'
-            ]);
+            // Ensure the directory itself is deleted
+            if (Storage::exists($temp_dir)) {
+                Storage::deleteDirectory($temp_dir);
+            }
         }
 
-        $temp_dir = 'temp_attachments/' . $this->userId;
 
-        // Ensure the directory itself is deleted
-        if (Storage::exists($temp_dir)) {
-            Storage::deleteDirectory($temp_dir);
-        }
 
         return response()->json([
             'message' => 'Post created successfully',
-            'stored_paths' => $storedPath,
         ], 201);
     }
 }

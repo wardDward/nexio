@@ -11,8 +11,10 @@ export default function useAuth() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      await dispatch(authenticated());
-      setLoadingComplete(true);
+      const response = await dispatch(authenticated());
+      if (response.meta.requestStatus === "fulfilled") {
+        setLoadingComplete(true);
+      }
     };
     fetchUser();
   }, [dispatch]);
@@ -20,7 +22,7 @@ export default function useAuth() {
   useEffect(() => {
     if (loadingComplete) {
       if (user && user.email_verified_at === null) {
-        navigate("/verify-email");
+        navigate("/verify/email");
       } else {
         navigate("/");
       }

@@ -39,7 +39,7 @@ export default function Register() {
         password: "",
         password_confirmation: "",
       });
-      navigate("/verify-email");
+      navigate("/verify/email");
     }
   };
 

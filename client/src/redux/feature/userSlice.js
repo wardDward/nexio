@@ -7,7 +7,7 @@ export const login = createAsyncThunk(
     try {
       await axios.get("sanctum/csrf-cookie");
       await axios.post("/login", credentials);
-      // await thunkApi.dispatch(authenticated());
+      await thunkApi.dispatch(authenticated());
     } catch (error) {
       credentials.password = "";
       return thunkApi.rejectWithValue(error.response.data.errors);
@@ -36,6 +36,7 @@ export const register = createAsyncThunk(
     try {
       await axios.get("sanctum/csrf-cookie");
       await axios.post("/register", data);
+      await thunkApi.dispatch(authenticated());
     } catch (error) {
       data.password = "";
       data.password_confirmation = "";

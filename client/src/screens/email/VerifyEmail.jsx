@@ -1,10 +1,11 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Nexio from "../../assets/images/image_icon/nexio.png";
 import useAuth from "../../hooks/useAuth";
 import { resendEmailVerification } from "../../redux/feature/userSlice";
 export default function VerifyEmail() {
-  const { isLoading } = useAuth();
+  const {} = useAuth();
   const dispatch = useDispatch();
+  const {isLoading} = useSelector(state => state.posts)
 
   const resendEmail = (e) => {
     e.preventDefault();

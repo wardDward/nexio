@@ -18,7 +18,7 @@ const router = createBrowserRouter(
       <Route element={<MainLayout />}>
         <Route path="/" element={<NewsFeed />} />
       </Route>
-      <Route path="/verify-email" element={<VerifyEmail/>}/>
+      <Route path="/verify/email" element={<VerifyEmail />} />
     </Route>
   )
 );

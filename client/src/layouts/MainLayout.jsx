@@ -1,18 +1,22 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Sidebar from "../components/navigations/Sidebar";
 import OnlineBar from "../components/navigations/OnlineBar";
 import NavigationBar from "../components/navigations/NavigationBar";
-import { useState } from "react";
 import Searchbar from "../components/navigations/Searchbar";
 import useAuth from "../hooks/useAuth";
+import ProgressBar from "../components/popUps/ProgressBar";
 
 export default function MainLayout() {
+  const {} = useAuth();
+
   const [toggleSearchBar, setToggleSearchBar] = useState(false);
+  const { showProgress } = useSelector((state) => state.posts);
 
   const toggleSearch = () => {
     setToggleSearchBar(!toggleSearchBar);
   };
-  const {} = useAuth();
 
   return (
     <>
@@ -27,6 +31,7 @@ export default function MainLayout() {
         <OnlineBar />
         {toggleSearchBar && <Searchbar toggleSearch={toggleSearch} />}
       </div>
+      {showProgress && <ProgressBar />}
     </>
   );
 }

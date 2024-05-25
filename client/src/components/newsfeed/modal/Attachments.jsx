@@ -112,7 +112,7 @@ export default function Attachments({ files, handleFiles, setFiles }) {
                 }`}
               >
                 {file.type.startsWith("video/") ? (
-                  <video controls className="w-full h-full object-cover">
+                  <video controls className="w-full h-full object-contain">
                     <source src={renderMedia(file)} type={file.type} />
                     Your browser does not support the video tag.
                   </video>
@@ -120,7 +120,7 @@ export default function Attachments({ files, handleFiles, setFiles }) {
                   <img
                     src={renderMedia(file)}
                     alt={`Media ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                 )}
               </div>

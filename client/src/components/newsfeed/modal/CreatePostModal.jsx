@@ -5,17 +5,19 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { clearState, createPost } from "../../../redux/feature/postSlice";
 import Attachments from "./Attachments";
-
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import Carousel from "../../popUps/Carousel";
 export default function CreatePostModal({ closeModal }) {
   const [caption, setCaption] = useState("");
   const [files, setFiles] = useState([]);
+  const [disableBtn, setDisableBtn] = useState(true);
+  const [showMedia, setShowMedia] = useState(false);
   const { isLoading, errorMessage } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
   const captionRef = useRef();
 
   useEffect(() => {
     captionRef.current.focus();
-    
   }, []);
 
   useEffect(() => {
@@ -44,6 +46,14 @@ export default function CreatePostModal({ closeModal }) {
     };
   }, [files]);
 
+  useEffect(() => {
+    if (caption === "" && files.length === 0) {
+      setDisableBtn(true);
+    } else {
+      setDisableBtn(false);
+    }
+  }, [caption, files]);
+
   const handleFiles = (e) => {
     const chosenFiles = [...e.target.files];
     setFiles((prevFiles) => [...prevFiles, ...chosenFiles]);
@@ -65,25 +75,30 @@ export default function CreatePostModal({ closeModal }) {
 
   const submitPost = async (e) => {
     e.preventDefault();
+    dispatch(clearState());
+    closeModal();
+
     const res = await dispatch(
       createPost({ body: caption, attachment: files })
     );
-    console.log(res);
-    console.log(errorMessage);
 
     if (res.meta.requestStatus === "fulfilled") {
+      setCaption("");
       setFiles([]);
-      // put a toast after
     }
+  };
+
+  const togglePreview = () => {
+    setShowMedia(!showMedia);
   };
 
   return (
     <>
       <div
-        className="absolute inset-0 bg-black/50 z-[99999999]"
+        className="absolute inset-0 bg-black/50 z-[9999999]"
         onClick={closePostModal}
       ></div>
-      <div className="bg-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999999999] w-full md:w-[60%] lg:w-[30%] rounded-md flex flex-col">
+      <div className="bg-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999999] w-full md:w-[60%] lg:w-[30%] rounded-md flex flex-col">
         <div className="p-2 relative flex items-center justify-center">
           <h1 className="font-bold mt-[5px] text-lg">Create Post</h1>
           <div
@@ -121,9 +136,10 @@ export default function CreatePostModal({ closeModal }) {
             id="body"
             onChange={(e) => setCaption(e.target.value)}
             value={caption}
-            className="w-full mt-[10px] text-sm resize-none max-h-[100px] p-2 overflow-y-scroll outline-none"
+            className="w-full mt-[10px] text-sm resize-none max-h-[100px] p-2 overflow-y-scroll outline-none bg-white text-black"
             placeholder="What's on your mind, Edward?"
           ></textarea>
+          <hr className="mb-2"/>
           <Attachments
             files={files}
             setFiles={setFiles}
@@ -132,14 +148,24 @@ export default function CreatePostModal({ closeModal }) {
           <div className="flex items-center justify-between my-4 px-2 border-[1px] border-slate-400 py-3 rounded-md">
             <h5 className="text-sm font-medium">Add to your post</h5>
             <div>
-              <CollectionsIcon
+            <label htmlFor="add_media">
+            <CollectionsIcon
                 className="text-green-500 cursor-pointer mx-2"
                 titleAccess="Add image or video"
               />
+              <input type="file" name="add_media" id="add_media" multiple className="hidden" onChange={(e) => handleFiles(e)}/>
+            </label>
               <LocalOfferOutlinedIcon
                 className="text-blue-500 cursor-pointer mx-2"
                 titleAccess="Tag people"
               />
+              {files.length !== 0 && (
+                <RemoveRedEyeOutlinedIcon
+                  onClick={() => togglePreview()}
+                  className="text-black cursor-pointer mx-2"
+                  titleAccess="View All Media"
+                />
+              )}
             </div>
           </div>
           {errorMessage["attachment.0"] && (
@@ -148,8 +174,11 @@ export default function CreatePostModal({ closeModal }) {
             </p>
           )}
           <button
+            disabled={disableBtn}
             type="submit"
-            className="w-full text-gray-700 bg-gray-300 py-2 rounded-lg flex justify-center items-center"
+            className={`w-full py-2 rounded-lg flex justify-center items-center ${
+              disableBtn ? "text-gray-700 bg-gray-300" : "bg-black text-white"
+            }`}
           >
             {isLoading && (
               <svg
@@ -177,6 +206,7 @@ export default function CreatePostModal({ closeModal }) {
           </button>
         </form>
       </div>
+      {showMedia && <Carousel files={files} togglePreview={togglePreview} />}
     </>
   );
 }

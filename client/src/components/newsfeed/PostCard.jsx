@@ -1,8 +1,57 @@
+import { useEffect, useState } from "react";
 import InteractionBar from "./InteractionBar";
 
-export default function PostCard() {
+const renderMedia = (media) => {
+  const extension = media.attachment.split(".").pop().toLowerCase();
+  const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(
+    extension
+  );
+  const isVideo = ["mp4", "mov", "avi", "wmv", "flv", "mkv", "webm"].includes(
+    extension
+  );
+
+  if (isImage) {
+    return (
+      <img
+        key={media.id} // Ensure each media item has a unique key
+        src={`http://api.nexio.test/api/storage/${media.attachment}`}
+        className="object-contain h-[500px]"
+        alt="Post Attachment"
+      />
+    );
+  } else if (isVideo) {
+    return (
+      <video key={media.id} className="object-cover h-[500px]" controls>
+        <source src={`http://api.nexio.test/api/storage/${media.attachment}`} />
+        Your browser does not support the video tag.
+      </video>
+    );
+  } else {
+    return null;
+  }
+};
+
+export default function PostCard({ post }) {
+  const [mediaURLs, setMediaURLs] = useState([]);
+
+  useEffect(() => {
+    const getMedia = async () => {
+      try {
+        const mediaURLs = post.post_attachments.map(
+          (media) => media.attachment
+        );
+        setMediaURLs(mediaURLs);
+        console.log(mediaURLs);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getMedia();
+  }, [post]);
+
   return (
-    <div className="my-2 bg-white flex  flex-col w-full pt-6 shadow-md rounded-lg border ">
+    <div className="my-2 bg-white flex flex-col w-full pt-6 shadow-md rounded-lg border">
       <div className="flex items-center px-4">
         <img
           src="https://images.unsplash.com/photo-1642649149963-0ef6779df6c6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -10,23 +59,18 @@ export default function PostCard() {
           className="h-[40px] w-[40px] rounded-full border border-gray-200"
         />
         <a href="#" className="text-black font-semibold text-sm ml-3">
-          Edward Taligatos
+          {post.post_owner.name}
         </a>
       </div>
       <div className="my-2">
-        <p className="text-[13px] text-gray-600 font-[400] line-clamp-2 px-5">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Cupiditate,
-          dicta aliquid repellat fuga reiciendis suscipit facilis inventore
-          dolore magnam eius illum porro quod, eum nisi facere veniam ut velit
-          vitae!
+        <p className="text-[13px] text-gray-600 font-[400] line-clamp-2 px-6">
+          {post.body}
         </p>
       </div>
       <div className="flex justify-center mt-4 px-5">
-        <img
-          src="https://images.unsplash.com/photo-1714385998351-341d070aa79e?q=80&w=1970&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          className="object-cover h-[500px]"
-          alt=""
-        />
+        {mediaURLs.map((mediaURL, index) =>
+          renderMedia({ attachment: mediaURL, id: index })
+        )}
       </div>
       <InteractionBar />
     </div>

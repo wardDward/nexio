@@ -69,7 +69,7 @@ const MenuLink = ({ toggleSearch }) => {
 
 export default function NavigationBar({ toggleSearch }) {
   return (
-    <nav className="flex lg:hidden justify-between items-center h-[60px] bg-white fixed inset-x-0 w-full z-[99999] px-10">
+    <nav className="flex lg:hidden justify-between items-center h-[60px] bg-white fixed inset-x-0 w-full z-[99999] px-10 border border-b-[1px]">
       <div>
         <Link to="/">
           <img src={Nexio} alt="nexio_logo" className="h-[50px] w-[50px]" />

@@ -92,6 +92,13 @@ export default function CreatePostModal({ closeModal }) {
     setShowMedia(!showMedia);
   };
 
+  const removeFile = (indexToRemove) => {
+    // console.log(indexToRemove);
+    setFiles((prevFiles) =>
+      prevFiles.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
   return (
     <>
       <div
@@ -139,7 +146,7 @@ export default function CreatePostModal({ closeModal }) {
             className="w-full mt-[10px] text-sm resize-none max-h-[100px] p-2 overflow-y-scroll outline-none bg-white text-black"
             placeholder="What's on your mind, Edward?"
           ></textarea>
-          <hr className="mb-2"/>
+          <hr className="mb-2" />
           <Attachments
             files={files}
             setFiles={setFiles}
@@ -148,13 +155,20 @@ export default function CreatePostModal({ closeModal }) {
           <div className="flex items-center justify-between my-4 px-2 border-[1px] border-slate-400 py-3 rounded-md">
             <h5 className="text-sm font-medium">Add to your post</h5>
             <div>
-            <label htmlFor="add_media">
-            <CollectionsIcon
-                className="text-green-500 cursor-pointer mx-2"
-                titleAccess="Add image or video"
-              />
-              <input type="file" name="add_media" id="add_media" multiple className="hidden" onChange={(e) => handleFiles(e)}/>
-            </label>
+              <label htmlFor="add_media">
+                <CollectionsIcon
+                  className="text-green-500 cursor-pointer mx-2"
+                  titleAccess="Add image or video"
+                />
+                <input
+                  type="file"
+                  name="add_media"
+                  id="add_media"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => handleFiles(e)}
+                />
+              </label>
               <LocalOfferOutlinedIcon
                 className="text-blue-500 cursor-pointer mx-2"
                 titleAccess="Tag people"
@@ -206,7 +220,13 @@ export default function CreatePostModal({ closeModal }) {
           </button>
         </form>
       </div>
-      {showMedia && <Carousel files={files} togglePreview={togglePreview} />}
+      {showMedia && (
+        <Carousel
+          files={files}
+          togglePreview={togglePreview}
+          removeFile={removeFile}
+        />
+      )}
     </>
   );
 }

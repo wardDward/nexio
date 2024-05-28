@@ -8,6 +8,7 @@ import MainLayout from "../layouts/MainLayout";
 import NewsFeed from "../screens/NewsFeed";
 import Register from "../screens/auth/Register";
 import VerifyEmail from "../screens/email/VerifyEmail";
+import ViewMedia from "../components/newsfeed/ViewMedia";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
         <Route path="/" element={<NewsFeed />} />
       </Route>
       <Route path="/verify/email" element={<VerifyEmail />} />
+      <Route path="/media/attachments/:id/*" element={<ViewMedia/>}/>
     </Route>
   )
 );

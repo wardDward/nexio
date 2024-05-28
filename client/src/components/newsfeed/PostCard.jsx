@@ -1,35 +1,6 @@
 import { useEffect, useState } from "react";
 import InteractionBar from "./InteractionBar";
-
-const renderMedia = (media) => {
-  const extension = media.attachment.split(".").pop().toLowerCase();
-  const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(
-    extension
-  );
-  const isVideo = ["mp4", "mov", "avi", "wmv", "flv", "mkv", "webm"].includes(
-    extension
-  );
-
-  if (isImage) {
-    return (
-      <img
-        key={media.id} // Ensure each media item has a unique key
-        src={`http://api.nexio.test/api/storage/${media.attachment}`}
-        className="object-contain h-[500px]"
-        alt="Post Attachment"
-      />
-    );
-  } else if (isVideo) {
-    return (
-      <video key={media.id} className="object-cover h-[500px]" controls>
-        <source src={`http://api.nexio.test/api/storage/${media.attachment}`} />
-        Your browser does not support the video tag.
-      </video>
-    );
-  } else {
-    return null;
-  }
-};
+import PostCardCarousel from "./PostCardCarousel";
 
 export default function PostCard({ post }) {
   const [mediaURLs, setMediaURLs] = useState([]);
@@ -41,7 +12,7 @@ export default function PostCard({ post }) {
           (media) => media.attachment
         );
         setMediaURLs(mediaURLs);
-        console.log(mediaURLs);
+        // console.log(mediaURLs);
       } catch (error) {
         console.error(error);
       }
@@ -67,11 +38,11 @@ export default function PostCard({ post }) {
           {post.body}
         </p>
       </div>
-      <div className="flex justify-center mt-4 px-5">
-        {mediaURLs.map((mediaURL, index) =>
-          renderMedia({ attachment: mediaURL, id: index })
-        )}
-      </div>
+      {post.post_attachments.length > 0 && (
+        <div className="flex gap-4 mt-4 px-5">
+          <PostCardCarousel post_id={post.id} medias={mediaURLs} />
+        </div>
+      )}
       <InteractionBar />
     </div>
   );

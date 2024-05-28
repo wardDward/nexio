@@ -30,29 +30,33 @@ export const createPost = createAsyncThunk(
 
           // Dispatch an action to update the progress state
           thunkApi.dispatch(
-            setUploadProgress({ showProgress: true ,progress, uploadedBytes, totalBytes })
+            setUploadProgress({
+              showProgress: true,
+              progress,
+              uploadedBytes,
+              totalBytes,
+            })
           );
         },
-      })
+      });
     } catch (error) {
       return thunkApi.rejectWithValue(error.response.data.errors);
-    }finally {
+    } finally {
       // Dispatch to hide the progress indicator
       thunkApi.dispatch(setUploadProgress({ showProgress: false }));
     }
   }
 );
 
-
-export const getPosts = createAsyncThunk('posts/getPosts', async() => {
+export const getPosts = createAsyncThunk("posts/getPosts", async () => {
   try {
-    const response = await axios.get('/api/posts')
+    const response = await axios.get("/api/posts");
     console.log(response);
-    return response.data.data
+    return response.data.data;
   } catch (error) {
     console.error(error);
   }
-})
+});
 
 const postSlice = createSlice({
   name: "posts",
@@ -98,12 +102,12 @@ const postSlice = createSlice({
         state.uploadProgress = 0;
       })
       .addCase(getPosts.pending, (state) => {
-        state.isLoading = true
+        state.isLoading = true;
       })
-      .addCase(getPosts.fulfilled, (state,action) => {
-        state.isLoading = false
-        state.posts = action.payload
-      })
+      .addCase(getPosts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.posts = action.payload;
+      });
   },
 });
 

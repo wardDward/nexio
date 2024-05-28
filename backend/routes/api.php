@@ -1,10 +1,8 @@
 <?php
 
+use App\Http\Controllers\Post\PostAttachmentController;
 use App\Http\Controllers\Post\PostController;
-use App\Models\PostAttachment;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Http\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,12 +15,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/posts', PostController::class);
+    Route::get('/storage/{path}', function ($path) {
+        if (!$path) {
+            abort(404);
+        }
+        return Storage::disk('local')->get($path);
+    })->where('path', '.*');
+    Route::get('/media_attachments/{id}/{path}', [PostAttachmentController::class, 'view_attachments'])->where('path', '.*');
 });
-
-Route::get('/storage/{path}', function ($path) {
-
-    if (!$path) {
-        abort(404);
-    }
-    return Storage::disk('local')->get($path);
-})->where('path', '.*');

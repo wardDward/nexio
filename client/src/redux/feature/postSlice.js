@@ -48,15 +48,38 @@ export const createPost = createAsyncThunk(
   }
 );
 
-export const getPosts = createAsyncThunk("posts/getPosts", async () => {
-  try {
-    const response = await axios.get("/api/posts");
-    console.log(response);
-    return response.data.data;
-  } catch (error) {
-    console.error(error);
+export const getPosts = createAsyncThunk(
+  "posts/getPosts",
+  async (_, thunkApi) => {
+    try {
+      const state = thunkApi.getState().posts;
+      const response = await axios.get(`/api/posts?page=${state.page}`);
+      const fetchedPosts = response.data.data;
+      if (fetchedPosts.length === 0) {
+        thunkApi.dispatch(setHasMorePost(false));
+        // console.log('test');
+        return state.posts;
+      } else {
+        thunkApi.dispatch(incrementPage());
+        if (fetchedPosts.length < 5) {
+          thunkApi.dispatch(setHasMorePost(false));
+          return state.posts;
+        }
+        return [...state.posts, ...fetchedPosts];
+      }
+    } catch (error) {
+      thunkApi.dispatch(clearPosts());
+      return thunkApi.rejectWithValue(error.response.data.errors);
+    }
   }
-});
+);
+
+export const loadMorePost = createAsyncThunk(
+  "posts/loadMorePost",
+  async (_, thunkApi) => {
+    await thunkApi.dispatch(getPosts());
+  }
+);
 
 const postSlice = createSlice({
   name: "posts",
@@ -67,6 +90,8 @@ const postSlice = createSlice({
     uploadedBytes: 0,
     totalBytes: 0,
     showProgress: false,
+    page: 1,
+    hasMorePosts: true,
     errorMessage: {},
   },
   reducers: {
@@ -83,6 +108,18 @@ const postSlice = createSlice({
         state.uploadedBytes = action.payload.uploadedBytes;
         state.totalBytes = action.payload.totalBytes;
       }
+    },
+    incrementPage: (state) => {
+      state.page++;
+    },
+    setHasMorePost: (state, action) => {
+      state.hasMorePosts = action.payload;
+    },
+    pushPosts: (state, action) => {
+      state.posts.push(...action.payload);
+    },
+    clearPosts: (state) => {
+      state.posts = [];
     },
   },
   extraReducers: (builder) => {
@@ -107,9 +144,19 @@ const postSlice = createSlice({
       .addCase(getPosts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.posts = action.payload;
+      })
+      .addCase(getPosts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.errorMessage = action.payload;
       });
   },
 });
 
-export const { clearState, setUploadProgress } = postSlice.actions;
+export const {
+  clearState,
+  setUploadProgress,
+  incrementPage,
+  setHasMorePost,
+  clearPosts,
+} = postSlice.actions;
 export default postSlice.reducer;

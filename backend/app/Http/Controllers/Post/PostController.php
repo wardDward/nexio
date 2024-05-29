@@ -21,7 +21,7 @@ class PostController extends Controller
 
         $posts = Post::whereIn('user_id', $following_id)
             ->where('user_id', '!=', auth()->user()->id)
-            ->with(['user'])->orderBy('created_at', 'desc')->get();
+            ->with(['user'])->orderBy('created_at', 'desc')->paginate(5);
 
         return PostResource::collection($posts);
     }

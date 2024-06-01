@@ -53,6 +53,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Post::class, 'user_id');
     }
 
+    public function explores(){
+        return $this->hasMany(Explore::class, 'user_id');
+    }
 
     // get all the follower_id that related in the user_id
     public function following()

@@ -191,7 +191,7 @@ export default function CreatePostModal({ closeModal }) {
             disabled={disableBtn}
             type="submit"
             className={`w-full py-2 rounded-lg flex justify-center items-center ${
-              disableBtn ? "text-gray-700 bg-gray-300" : "bg-black text-white"
+              disableBtn ? "text-gray-700 bg-gray-300 cursor-not-allowed" : "bg-black text-white"
             }`}
           >
             {isLoading && (

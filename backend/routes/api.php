@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Explore\ExploreController;
 use App\Http\Controllers\Post\PostAttachmentController;
 use App\Http\Controllers\Post\PostController;
 use Illuminate\Http\Request;
@@ -14,6 +15,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+//post releted
     Route::apiResource('/posts', PostController::class);
     Route::get('/storage/{path}', function ($path) {
         if (!$path) {
@@ -22,4 +25,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return Storage::disk('local')->get($path);
     })->where('path', '.*');
     Route::get('/media_attachments/{id}/{path}', [PostAttachmentController::class, 'view_attachments'])->where('path', '.*');
+
+//explore related
+    Route::apiResource('/explores', ExploreController::class);
 });

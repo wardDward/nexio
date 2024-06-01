@@ -40,12 +40,19 @@ export default function StorySlider() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowPrevButton(cardsContainerRef.current.scrollLeft > 0);
+      if (cardsContainerRef.current) {
+        setShowPrevButton(cardsContainerRef.current.scrollLeft > 0);
+      }
     };
 
-    cardsContainerRef.current.addEventListener("scroll", handleScroll);
+    const container = cardsContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
     return () => {
-      cardsContainerRef.current.removeEventListener("scroll", handleScroll);
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
     };
   }, []);
 
@@ -128,4 +135,4 @@ export default function StorySlider() {
   );
 }
 
-// NOTE: Slider is created by gpt
+// NOTE: Slider is created by gpt (the function of slider only)

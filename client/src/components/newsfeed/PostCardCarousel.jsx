@@ -2,7 +2,7 @@ import { useState } from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { Link } from "react-router-dom";
-export default function PostCardCarousel({ post_id ,medias }) {
+export default function PostCardCarousel({ post_id, medias }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const prevSlide = () => {
     if (currentIndex > 0) {
@@ -54,7 +54,7 @@ export default function PostCardCarousel({ post_id ,medias }) {
                       controls
                       className="object-contain w-full h-[500px] cursor-pointer hover:opacity-[0.4]"
                     >
-                      <source src={fileUrl} type="video/mp4" />
+                      <source src={fileUrl} type={`video/${extension}`} />
                       Your browser does not support the video tag.
                     </video>
                   )}

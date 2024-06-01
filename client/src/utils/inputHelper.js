@@ -4,3 +4,4 @@ export const handleInputChanges = (e, formData, setFormData) => {
     [e.target.name]: e.target.value,
   });
 };
+

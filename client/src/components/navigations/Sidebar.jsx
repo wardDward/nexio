@@ -2,9 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import Nexio from "../../assets/images/image_icon/nexio.png";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
-import OndemandVideoOutlinedIcon from "@mui/icons-material/OndemandVideoOutlined";
-import PhotoSizeSelectActualOutlinedIcon from "@mui/icons-material/PhotoSizeSelectActualOutlined";
-import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
+import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 import SearchIcon from "@mui/icons-material/Search";
 
 import DropDown from "./DropDown";
@@ -19,12 +17,8 @@ const MenuLink = ({ toggleSearch }) => {
         return <HomeOutlinedIcon />;
       case "PeopleAltOutlinedIcon":
         return <PeopleAltOutlinedIcon />;
-      case "OndemandVideoOutlinedIcon":
-        return <OndemandVideoOutlinedIcon />;
-      case "PhotoSizeSelectActualOutlinedIcon":
-        return <PhotoSizeSelectActualOutlinedIcon />;
-      case "StorefrontOutlinedIcon":
-        return <StorefrontOutlinedIcon />;
+      case "ExploreOutlinedIcon":
+        return <ExploreOutlinedIcon />;
       case "SearchIcon":
         return <SearchIcon />;
       default:
@@ -40,7 +34,7 @@ const MenuLink = ({ toggleSearch }) => {
             key={item.name}
             role="button"
             className="navlink w-full"
-            onClick={item.onClick} // Invoke onClick handler directly
+            onClick={item.onClick}
           >
             {getIcon(item.icon)}{" "}
             <span className="ml-2 text-sm">{item.name}</span>

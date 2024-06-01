@@ -23,9 +23,10 @@ export default function useAuth() {
     if (loadingComplete) {
       if (user && user.email_verified_at === null) {
         navigate("/verify/email");
-      } else {
-        navigate("/");
       }
+      // else {
+      //   navigate("/");
+      // }
     }
   }, [loadingComplete, user, navigate]);
 

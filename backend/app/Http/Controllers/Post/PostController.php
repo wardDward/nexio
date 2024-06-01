@@ -32,8 +32,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'body' => 'string',
-            'attachment.*' => 'required|file|mimes:jpg,jpeg,png,mkv,mp4'
+            'attachment.*' => 'required|file|mimes:jpg,jpeg,png,mkv,mp4,mov'
         ]);
 
         $userId = auth()->user()->id;
@@ -78,6 +77,4 @@ class PostController extends Controller
     {
         //
     }
-
-
 }

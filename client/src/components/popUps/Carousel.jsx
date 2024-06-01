@@ -1,6 +1,5 @@
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
@@ -65,7 +64,7 @@ export default function Carousel({ files, togglePreview, removeFile }) {
             </div>
           </>
         )}
-        <div className="relative  w-[70%]">
+        <div className="relative w-[70%]">
           <div className="overflow-hidden">
             <div
               className="flex transition-transform duration-500 ease-in-out"
@@ -73,7 +72,7 @@ export default function Carousel({ files, togglePreview, removeFile }) {
             >
               {files.map((file, index) => (
                 <div className="w-full flex-shrink-0" key={index}>
-                  <div className=" flex justify-end">
+                  <div className="flex justify-end">
                     <button
                       className="py-1 px-6 text-white bg-black/50 rounded-full hover:bg-black/90"
                       onClick={() => removeFile(index)}

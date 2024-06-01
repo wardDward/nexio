@@ -1,58 +1,30 @@
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import { useState } from "react";
+import {
+  handleDragEnter,
+  handleDragLeave,
+  handleDragOver,
+  handleDrop,
+} from "../../../utils/functionHelper";
 
 export default function Attachments({ files, handleFiles, setFiles }) {
   const [dragging, setDragging] = useState(false);
-  const [error, setError] = useState("");
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const dragEnterHelper = (e) => {
+    handleDragEnter(e, setDragging);
   };
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
+  const dragLeaveHelper = (e) => {
+    handleDragLeave(e, setDragging);
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const dragOverHelper = (e) => {
+    handleDragOver(e);
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const droppedFiles = [...e.dataTransfer.files];
-
-    const allowedFileTypes = [
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "video/x-matroska",
-      "video/mp4",
-    ];
-    const validFiles = droppedFiles.reduce((acc, file) => {
-      if (allowedFileTypes.includes(file.type)) {
-        console.log(file);
-        acc.push(file);
-      } else {
-        console.log(file);
-        const fileExtension = file.name.substring(
-          file.name.lastIndexOf(".") + 1
-        );
-        setError(`File like "${fileExtension}" is not allowed`);
-      }
-      return acc;
-    }, []);
-
-    if (validFiles.length > 0) {
-      setFiles((prevFiles) => [...prevFiles, ...validFiles]);
-    }
-
-    setDragging(false);
+  const dragDropHelper = (e) => {
+    handleDrop(e, setDragging, setErrorMessage, setFiles);
   };
 
   const renderMedia = (file) => {
@@ -60,17 +32,15 @@ export default function Attachments({ files, handleFiles, setFiles }) {
   };
   return (
     <>
-      {error}
-
       {files.length === 0 && (
         <div className="h-[250px] border-[3px] rounded-md p-2">
           <label
             className="cursor-pointer bg-slate-200/70 h-full flex flex-col justify-center items-center"
             htmlFor="file"
-            onDragEnter={handleDragEnter}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
+            onDragEnter={dragEnterHelper}
+            onDragOver={dragOverHelper}
+            onDragLeave={dragLeaveHelper}
+            onDrop={dragDropHelper}
           >
             <CloudDownloadIcon sx={{ fontSize: 60 }} />
             <span className="text-gray-600 text-sm">
@@ -128,6 +98,7 @@ export default function Attachments({ files, handleFiles, setFiles }) {
           </div>
         </div>
       )}
+      <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
     </>
   );
 }

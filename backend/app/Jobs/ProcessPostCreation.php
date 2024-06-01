@@ -65,10 +65,5 @@ class ProcessPostCreation implements ShouldQueue
             }
         }
 
-
-
-        return response()->json([
-            'message' => 'Post created successfully',
-        ], 201);
     }
 }

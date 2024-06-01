@@ -9,6 +9,7 @@ import NewsFeed from "../screens/NewsFeed";
 import Register from "../screens/auth/Register";
 import VerifyEmail from "../screens/email/VerifyEmail";
 import ViewMedia from "../components/newsfeed/ViewMedia";
+import ExploreFeed from "../screens/ExploreFeed";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,9 +19,11 @@ const router = createBrowserRouter(
 
       <Route element={<MainLayout />}>
         <Route path="/" element={<NewsFeed />} />
+        <Route path="/explore" element={<ExploreFeed />} />
       </Route>
+      
       <Route path="/verify/email" element={<VerifyEmail />} />
-      <Route path="/media/attachments/:id/*" element={<ViewMedia/>}/>
+      <Route path="/media/attachments/:id/*" element={<ViewMedia />} />
     </Route>
   )
 );

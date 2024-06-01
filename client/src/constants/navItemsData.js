@@ -18,20 +18,11 @@ export const navItemsData = (toggleSearch) => {
       name: "Friends",
     },
     {
-      path: "/test",
-      icon: "OndemandVideoOutlinedIcon",
+      path: "/explore",
+      icon: "ExploreOutlinedIcon",
       name: "Video",
     },
-    {
-      path: "/test",
-      icon: "PhotoSizeSelectActualOutlinedIcon",
-      name: "Photos",
-    },
-    {
-      path: "/test",
-      icon: "StorefrontOutlinedIcon",
-      name: "Marketplace",
-    },
+
   ];
 
   return { navItems };

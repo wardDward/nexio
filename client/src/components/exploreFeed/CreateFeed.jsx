@@ -47,6 +47,7 @@ export default function CreateFeed({ toggleModal }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const res = await dispatch(storeExplore({ caption, attachment: files }));
+    toggleModal();
 
     if (res.meta.requestStatus === "fulfilled") {
       setCaption("");

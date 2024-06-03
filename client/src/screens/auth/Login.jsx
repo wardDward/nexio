@@ -88,7 +88,7 @@ export default function Login() {
               <button
                 disabled={isLoading}
                 type="submit"
-                className="w-full bg-black text-white py-1 rounded-md hover:bg-gray-700 flex items-center justify-center"
+                className={`w-full bg-black text-white py-1 rounded-md hover:bg-gray-700 flex items-center justify-center ${isLoading ? 'cursor-not-allowed' : 'cursor-pointer'}`}
               >
                 {isLoading && (
                   <svg

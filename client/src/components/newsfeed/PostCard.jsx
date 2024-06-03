@@ -21,6 +21,7 @@ export default function PostCard({ post }) {
     getMedia();
   }, [post]);
 
+
   return (
     <div className="my-2 bg-white flex flex-col w-full pt-6 shadow-md rounded-lg border">
       <div className="flex items-center px-4">

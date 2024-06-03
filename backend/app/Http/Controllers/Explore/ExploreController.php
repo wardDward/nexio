@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Explore;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExploreCollection;
+use App\Http\Resources\ExploreResource;
 use App\Jobs\ProcessExpoloreCreation;
+use App\Models\Explore;
 use Illuminate\Http\Request;
 
 class ExploreController extends Controller
@@ -13,7 +16,10 @@ class ExploreController extends Controller
      */
     public function index()
     {
-        //
+        $explores = Explore::with(['users'])
+            ->orderBy('created_at', 'desc')->get();
+
+        return ExploreResource::collection($explores);
     }
 
     /**

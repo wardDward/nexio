@@ -5,7 +5,7 @@ export const storeExplore = createAsyncThunk(
   "explores/storeExplore",
   async (data, thunkApi) => {
     try {
-      console.log(data);
+      // console.log(data);
       const formData = new FormData();
       formData.append("caption", data.caption);
       data.attachment.forEach((file) => {
@@ -23,28 +23,54 @@ export const storeExplore = createAsyncThunk(
   }
 );
 
+export const getExplores = createAsyncThunk(
+  "explores/getExplores",
+  async (_, thunkApi) => {
+    try {
+      const response = await axios.get("/api/explores");
+      return response.data.data;
+    } catch (error) {
+      thunkApi.dispatch(clearExplores());
+      console.log(error);
+    }
+  }
+);
+
 const exploreSlice = createSlice({
   name: "explores",
   initialState: {
     explores: [],
-    isLoading: false,
+    isLoadingStoring: false,
+    isLoadingfetching: false,
     errorMesssage: [],
   },
-  reducers: {},
-    extraReducers: (builder) => {
-      builder.addCase(storeExplore.pending, (state) => {
-        state.isLoading = true
-      })
-      .addCase(storeExplore.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.explores = action.payload
-        state.errorMessage = []
-      })
-      .addCase(storeExplore.rejected, (state,action) => {
-        state.isLoading = false
-        state.errorMessage = action.payload
-      })
+  reducers: {
+    clearExplores: (state) => {
+      state.explores = [];
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(storeExplore.pending, (state) => {
+        state.isLoadingStoring = true;
+      })
+      .addCase(storeExplore.fulfilled, (state) => {
+        state.isLoadingStoring = false;
+        state.errorMessage = [];
+      })
+      .addCase(storeExplore.rejected, (state, action) => {
+        state.isLoadingStoring = false;
+        state.errorMessage = action.payload;
+      })
+      .addCase(getExplores.pending, (state) => {
+        state.isLoadingfetching = true;
+      })
+      .addCase(getExplores.fulfilled, (state, action) => {
+        state.isLoadingfetching = false;
+        state.explores = action.payload;
+      });
+  },
 });
 
+export const { clearExplores } = exploreSlice.actions;
 export default exploreSlice.reducer;

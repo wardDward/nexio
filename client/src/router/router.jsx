@@ -10,6 +10,7 @@ import Register from "../screens/auth/Register";
 import VerifyEmail from "../screens/email/VerifyEmail";
 import ViewMedia from "../components/newsfeed/ViewMedia";
 import ExploreFeed from "../screens/ExploreFeed";
+import ViewExplore from "../components/exploreFeed/ViewExplore";
 
 const router = createBrowserRouter(
   createRoutesFromElements(

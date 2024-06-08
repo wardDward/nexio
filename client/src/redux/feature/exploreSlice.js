@@ -36,6 +36,24 @@ export const getExplores = createAsyncThunk(
   }
 );
 
+export const specificExplores = createAsyncThunk(
+  "explores/specificExplores",
+  async (data, thunkApi) => {
+    console.log(data);
+    try {
+      const response = await axios.get(
+        `/api/explore_attachments/${data.firstSegment}/${data.path}`
+      );
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      thunkApi.dispatch(clearExplores());
+      return thunkApi.rejectWithValue(error.response.data.errors);
+    }
+  }
+);
+
 const exploreSlice = createSlice({
   name: "explores",
   initialState: {

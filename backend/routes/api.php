@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\Explore\ExploreController;
+use App\Http\Controllers\ExploreAttachmentController;
 use App\Http\Controllers\Post\PostAttachmentController;
 use App\Http\Controllers\Post\PostController;
-use App\Models\ExploreAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +24,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 //explore related
     Route::apiResource('/explores', ExploreController::class);
-    Route::get('/explore_attachmetns/{id}/{path}', [ExploreAttachment::class, 'view_explore'])->where('path', '.*');
+    Route::get('/explore_attachments/{id}/{path}', [ExploreAttachmentController::class, 'view_explore'])->where('path', '.*');
 
 
 // global

@@ -1,10 +1,12 @@
+
 import AddToPhotosOutlinedIcon from "@mui/icons-material/AddToPhotosOutlined";
 import CreateFeed from "../components/exploreFeed/CreateFeed";
 import ViewExplore from "../components/exploreFeed/ViewExplore";
+import ExploreCard from '../components/exploreFeed/ExploreCard'
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getExplores } from "../redux/feature/exploreSlice";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ExploreFeed() {
   const dispatch = useDispatch();
@@ -15,7 +17,7 @@ export default function ExploreFeed() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const query = useQuery();
   const path = query.get("path");
   const [isOpen, setIsOpen] = useState(false);
@@ -69,7 +71,8 @@ export default function ExploreFeed() {
           {isLoadingfetching ? (
             <div>Loading ...</div>
           ) : explores && explores.length > 0 ? (
-            explores.map((item, index) => {
+            explores.map((item,index) => {
+              // console.log(item.attachments[0].attachment);
               const fileUrl = `http://api.nexio.test/api/storage/${item.attachments[0].attachment}`;
               const extension = item.attachments[0].attachment
                 .split(".")
@@ -78,39 +81,14 @@ export default function ExploreFeed() {
               const isImage = ["jpg", "jpeg", "png"].includes(extension);
               const isVideo = ["mov", "mkv", "mp4"].includes(extension);
               return (
-                <Link key={index} to={`/explore?path=test`}>
-                  <div
-                    key={index}
-                    className="break-inside-avoid mb-2 flex justify-center"
-                  >
-                    {isVideo && (
-                      <div
-                        className="relative"
-                        style={{ height: "600px", width: "400px" }}
-                      >
-                        <video
-                          className="h-full w-full absolute top-0 left-0 object-cover rounded-lg"
-                          autoPlay
-                          loop
-                        >
-                          <source src={fileUrl} type={`video/${extension}`} />
-                        </video>
-                      </div>
-                    )}
-                    {isImage && (
-                      <div
-                        className="relative"
-                        style={{ height: "400px", width: "400px" }}
-                      >
-                        <img
-                          className="h-full w-full rounded-lg absolute top-0 left-0 object-cover"
-                          src={fileUrl}
-                          alt="image"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </Link>
+                    <ExploreCard
+                      key={index}
+                      explore={item}
+                      isImage={isImage}
+                      isVideo={isVideo}
+                      fileUrl={fileUrl}
+                      extension={extension}
+                    />
               );
             })
           ) : (
@@ -128,3 +106,5 @@ export default function ExploreFeed() {
     </>
   );
 }
+
+

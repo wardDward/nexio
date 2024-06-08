@@ -44,6 +44,10 @@
 display: none;
 }
 
+.commnent-container::-webkit-scrollbar {
+display: none;
+}
+
 .no-scroll {
   overflow: hidden;
   height: 100vh;

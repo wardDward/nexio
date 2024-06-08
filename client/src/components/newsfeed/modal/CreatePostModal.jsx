@@ -102,14 +102,14 @@ export default function CreatePostModal({ closeModal }) {
   return (
     <>
       <div
-        className="absolute inset-0 bg-black/50 z-[9999999]"
+        className="fixed inset-0 bg-black/50 z-[9999999]"
         onClick={closePostModal}
       ></div>
-      <div className="bg-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999999] w-full md:w-[60%] lg:w-[30%] rounded-md flex flex-col">
+      <div className="bg-white fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999999] w-full md:w-[60%] lg:w-[30%] rounded-md flex flex-col">
         <div className="p-2 relative flex items-center justify-center">
           <h1 className="font-bold mt-[5px] text-lg">Create Post</h1>
           <div
-            className="absolute right-4 bg-slate-100 p-2 top-[8px] rounded-full cursor-pointer"
+            className="fixed right-4 bg-slate-100 p-2 top-[8px] rounded-full cursor-pointer"
             onClick={closePostModal}
           >
             <CloseIcon sx={{ fontSize: 22 }} className="text-gray-900" />

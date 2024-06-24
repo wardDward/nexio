@@ -11,23 +11,27 @@ import VerifyEmail from "../screens/email/VerifyEmail";
 import ViewMedia from "../components/newsfeed/ViewMedia";
 import ExploreFeed from "../screens/ExploreFeed";
 import SuggestionFriends from "../screens/SuggestionFriends";
-import Profile from "../screens/auth/Profile";
+import GuestRoute from "./GuestRoute";
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<NewsFeed />} />
-        <Route path="/explore" element={<ExploreFeed />} />
-        <Route path="/suggestions" element={<SuggestionFriends/>}/>
-        <Route path="/profile" element={<Profile/>}/>
+      <Route element={<GuestRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Route>
 
-      <Route path="/verify/email" element={<VerifyEmail />} />
-      <Route path="/media/attachments/:id/*" element={<ViewMedia />} />
+      <Route element={<ProtectedRoute/>}>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<NewsFeed />} />
+          <Route path="/explore" element={<ExploreFeed />} />
+          <Route path="/suggestions" element={<SuggestionFriends />} />
+        </Route>
+
+        <Route path="/verify/email" element={<VerifyEmail />} />
+        <Route path="/media/attachments/:id/*" element={<ViewMedia />} />
+      </Route>
     </Route>
   )
 );

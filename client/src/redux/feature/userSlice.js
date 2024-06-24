@@ -17,15 +17,16 @@ export const login = createAsyncThunk(
 
 export const authenticated = createAsyncThunk(
   "users/authenticated",
-  async () => {
+  async (_, thunkApi) => {
     try {
       await axios.get("sanctum/csrf-cookie");
       const response = await axios.get("/api/user");
       return response.data;
     } catch (error) {
+      alert("Something went wrong.");
       localStorage.removeItem("auth");
-      alert("Something Went Wrong");
       window.location.replace("/login");
+      return thunkApi.dispatch(clearState());
     }
   }
 );
@@ -92,7 +93,6 @@ export const readNotitication = createAsyncThunk(
   }
 );
 
-
 const userSlice = createSlice({
   name: "users",
   initialState: {
@@ -109,13 +109,14 @@ const userSlice = createSlice({
       state.authFlag = false;
       state.isLoading = false;
       state.errorMessage = {};
+      localStorage.removeItem("auth");
     },
     incrementNotification: (state) => {
-      state.notification_count++
+      state.notification_count++;
     },
     clearNotification: (state) => {
-      state.notification_count = 0
-    }
+      state.notification_count = 0;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -148,11 +149,15 @@ const userSlice = createSlice({
       .addCase(authenticated.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
+        state.authFlag = true;
         localStorage.setItem("auth", JSON.stringify(true));
       })
       .addCase(authenticated.rejected, (state, action) => {
         state.isLoading = false;
+        state.user = {};
+        state.authFlag = false;
         state.errorMessage = action.payload;
+        localStorage.removeItem("auth");
       })
       .addCase(resendEmailVerification.pending, (state) => {
         state.isLoading = true;
@@ -180,5 +185,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { clearState,incrementNotification,clearNotification } = userSlice.actions;
+export const { clearState, incrementNotification, clearNotification } =
+  userSlice.actions;
 export default userSlice.reducer;

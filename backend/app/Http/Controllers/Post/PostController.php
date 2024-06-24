@@ -16,15 +16,26 @@ class PostController extends Controller
      */
     public function index()
     {
-
         $following_id = auth()->user()->following()->pluck('follower_id');
 
         $posts = Post::whereIn('user_id', $following_id)
             ->where('user_id', '!=', auth()->user()->id)
-            ->with(['user'])->orderBy('created_at', 'desc')->paginate(5);
+            ->whereHas('user.followers', function ($query) {
+                $query->where('status', 'friends');
+            })
+            ->with(['user'])
+            ->withCount([
+                'likedBy' => function ($query) {
+                    $query->whereNull('post_user_likes.deleted_at');
+                }
+            ])
+            ->withCount('comments')
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
         return PostResource::collection($posts);
     }
+
 
     /**
      * Store a newly created resource in storage.

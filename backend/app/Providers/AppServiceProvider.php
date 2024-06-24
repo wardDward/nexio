@@ -6,6 +6,7 @@ use App\Events\FollowSelf;
 use App\Listeners\AutoFollowSelf;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 

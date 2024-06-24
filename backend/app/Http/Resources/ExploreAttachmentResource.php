@@ -16,7 +16,10 @@ class ExploreAttachmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'attachment' => $this->attachment
+            'explore_id' => $this->explore_id,
+            'attachment' => $this->attachment,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

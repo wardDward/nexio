@@ -10,7 +10,7 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegisterController::class, 'store']);
 
-    Route::post('login', [AuthenticateController::class, 'store']);
+    Route::post('login', [AuthenticateController::class, 'store'])->name('login');
 });
 
 

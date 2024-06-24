@@ -53,20 +53,47 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Post::class, 'user_id');
     }
 
-    public function explores(){
+    public function explores()
+    {
         return $this->hasMany(Explore::class, 'user_id');
     }
 
     // get all the follower_id that related in the user_id
     public function following()
     {
-       return $this->belongsToMany(User::class, 'follower_user', 'user_id', 'follower_id');
+        return $this->belongsToMany(User::class, 'follower_user', 'user_id', 'follower_id');
     }
 
     // get all the user_id that related in the follower_id
     public function followers()
     {
-       return $this->belongsToMany(User::class, 'follower_user', 'follower_id', 'user_id');
+        return $this->belongsToMany(User::class, 'follower_user', 'follower_id', 'user_id');
+    }
+
+    // liked post by authenticated user
+    public function likedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'post_user_likes', 'user_id', 'post_id')
+            ->using(PostUserLike::class)
+            ->withTimestamps()
+            ->withPivot('deleted_at')
+            ->whereNull('post_user_likes.deleted_at');
+    }
+
+    // liked post by the users
+    public function likes()
+    {
+        return $this->belongsToMany(User::class, 'post_user_likes', 'post_id', 'user_id')
+            ->using(PostUserLike::class)
+            ->withTimestamps()
+            ->withPivot('deleted_at')
+            ->whereNull('post_user_likes.deleted_at');
+        ;
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'user_id');
     }
 
 }

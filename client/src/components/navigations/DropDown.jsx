@@ -25,7 +25,7 @@ export default function DropDown() {
             <span className="text-sm ml-2">Menu</span>
           </div>
         </Menu.Button>
-        <Menu.Items className="absolute top-[60%] bg-white shadow-lg right-1 left-1 border p-1 rounded-t-md">
+        <Menu.Items className="absolute top-[65%] bg-white shadow-lg right-1 left-1 border p-1 rounded-t-md">
           {navItems.map((item) => (
             <Menu.Item className="mb-1" key={item.name}>
               <Link
@@ -39,7 +39,10 @@ export default function DropDown() {
             </Menu.Item>
           ))}
           <div className="bg-slate-100 h-[5px]"></div>
-          <a href="#" className="text-sm hover:bg-slate-100 flex py-2 px-3 mt-2">
+          <a
+            href="#"
+            className="text-sm hover:bg-slate-100 flex py-2 px-3 mt-2"
+          >
             Logout
           </a>
         </Menu.Items>

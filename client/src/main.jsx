@@ -7,10 +7,14 @@ import router from "./router/router.jsx";
 import axios from "axios";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
+import echo from './echo.js'
 
 axios.defaults.baseURL = "http://api.nexio.test";
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
+
+
+window.Echo = echo
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

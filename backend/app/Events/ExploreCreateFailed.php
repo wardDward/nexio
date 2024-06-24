@@ -7,34 +7,46 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ExploreCreateFailed implements ShouldBroadcast
+class ExploreCreateFailed implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    
-    public $userId;
-    public $failedPath;
+
 
     /**
      * Create a new event instance.
      */
-    public function __construct($userId, $failedPath)
+    public function __construct(public $userId, public $message, public $failedFiles)
     {
         $this->userId = $userId;
-        $this->failedPath = $failedPath;
+        $this->message = $message;
+        $this->failedFiles = $failedFiles;
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return <int, \Illuminate\Broadcasting\PrivateChannel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn()
+    {
+        return new PrivateChannel('explores.' . $this->userId);
+    }
+
+    /**
+     * Get the data to broadcast.
+     *
+     * @return array<string, mixed>
+     */
+    public function broadcastWith(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            'user_id' => $this->userId,
+            'message' => $this->message,
+            'failed_path' => $this->failedFiles
         ];
     }
 }

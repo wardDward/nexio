@@ -57,14 +57,9 @@ export const getPosts = createAsyncThunk(
       const fetchedPosts = response.data.data;
       if (fetchedPosts.length === 0) {
         thunkApi.dispatch(setHasMorePost(false));
-        // console.log('test');
         return state.posts;
       } else {
         thunkApi.dispatch(incrementPage());
-        if (fetchedPosts.length < 5) {
-          thunkApi.dispatch(setHasMorePost(false));
-          return state.posts;
-        }
         return [...state.posts, ...fetchedPosts];
       }
     } catch (error) {

@@ -1,11 +1,11 @@
 import CloseIcon from "@mui/icons-material/Close";
 import ExploreAttachments from "./ExploreAttachments";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { handleFiles } from "../../utils/functionHelper";
 import PermMediaOutlinedIcon from "@mui/icons-material/PermMediaOutlined";
 import RemoveRedEyeOutlined from "@mui/icons-material/RemoveRedEyeOutlined";
-import { storeExplore } from "../../redux/feature/exploreSlice";
+import { clearExplores, storeExplore } from "../../redux/feature/exploreSlice";
 import ExploreCarousel from "../popUps/ExploreCarousel";
 
 export default function CreateFeed({ toggleModal }) {
@@ -17,7 +17,26 @@ export default function CreateFeed({ toggleModal }) {
   const [preview, setPreview] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const { isLoadingStoring } = useSelector((state) => state.explores);
+
   const captionRef = useRef(null);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (files.length > 0) {
+        const confirmationMessage =
+          "You have unsaved changes. Are you sure you want to leave?";
+        event.returnValue = confirmationMessage;
+        return confirmationMessage;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [files]);
 
   useEffect(() => {
     const body = document.querySelector("body");
@@ -55,6 +74,20 @@ export default function CreateFeed({ toggleModal }) {
     }
   };
 
+  const closePostModal = () => {
+    if (files.length > 0) {
+      const confirmClose = window.confirm(
+        "Changes you made may not be saved. Are you sure you want to close?"
+      );
+      if (confirmClose) {
+        dispatch(clearExplores());
+        toggleModal();
+      }
+    } else {
+      toggleModal();
+    }
+  };
+
   const removeFile = (indexRemove) => {
     console.log(indexRemove);
     setFiles((prevFiles) =>
@@ -66,11 +99,11 @@ export default function CreateFeed({ toggleModal }) {
     <>
       <div
         className="absolute inset-0 bg-black/40 z-[999]"
-        onClick={() => toggleModal()}
+        onClick={() => closePostModal()}
       ></div>
       <div
         className="absolute top-7 right-7 z-[9999] text-white hover:text-red-500 hover:bg-slate-100 cursor-pointer rounded-full p-1 mt-[60px] lg:mt-0"
-        onClick={() => toggleModal()}
+        onClick={() => closePostModal()}
       >
         <CloseIcon sx={{ fontSize: 29 }} />
       </div>

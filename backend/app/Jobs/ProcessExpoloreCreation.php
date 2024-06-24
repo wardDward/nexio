@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\ExploreCreateFailed;
 use App\Models\Explore;
 use Exception;
 use Illuminate\Bus\Queueable;
@@ -23,6 +24,13 @@ class ProcessExpoloreCreation implements ShouldQueue
 
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 5;
+
+    /**
      * Create a new job instance.
      */
     public function __construct($userId, $caption, $attachmentPaths)
@@ -39,6 +47,7 @@ class ProcessExpoloreCreation implements ShouldQueue
     {
 
         $failedFiles = [];
+        $message = '';
 
 
         if (!empty($this->attachmentPaths)) {
@@ -76,16 +85,23 @@ class ProcessExpoloreCreation implements ShouldQueue
             if (!empty($failedFiles)) {
                 if (count($this->attachmentPaths) === 1 && count($failedFiles) === 1) {
                     $explore->delete();
-                    Log::info('Single file upload failed' );
-                    throw new Exception('file upload failed');
+                    Log::info('Single file upload failed');
+                    $message = 'File upload failed.';
+                    broadcast(new ExploreCreateFailed($this->userId, $message, $failedFiles));
+                    return;
                 }
 
                 if (count($failedFiles) === count($this->attachmentPaths)) {
                     $explore->delete();
                     Log::info('All file uploads failed, cancelling creation.');
-                    throw new Exception('All file uploads failed.');
+                    $message = 'All file uploads failed, cancelling creation.';
+                    broadcast(new ExploreCreateFailed($this->userId, $message ,$failedFiles));
+                    return;
                 } else {
+                    $message = 'Some file uploads failed.';
+                    broadcast(new ExploreCreateFailed($this->userId, $message ,$failedFiles));
                     Log::info('Some file uploads failed: ' . implode(', ', $failedFiles));
+                    return;
                 }
             }
         }

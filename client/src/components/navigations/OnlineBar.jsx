@@ -30,7 +30,7 @@ const MessageCard = () => {
 
 export default function OnlineBar() {
   return (
-    <div className="hidden md:flex flex-col justify-between w-full md:w-[30%] lg:w-[20%] xl:w-[15%] bg-white fixed inset-y-0 right-0 border-r-[1px] border-l-[1px] mt-[60px] lg:mt-0 pt-0 lg:pt-[30px] z-[99999]">
+    <div className="hidden md:flex flex-col justify-between w-full md:w-[30%] lg:w-[20%] xl:w-[15%] bg-white fixed inset-y-0 right-0 border-r-[1px] border-l-[1px] mt-[60px] lg:mt-0 pt-0 lg:pt-[30px] z-[9999]">
       <div className="flex flex-col p-2 h-full">
         <form autoComplete="off">
           <div className="relative flex items-center">
@@ -54,7 +54,7 @@ export default function OnlineBar() {
             See All
           </Link>
         </div>
-        <div className="max-h-[55%] min-h-[55%] overflow-y-scroll message-container flex flex-col">
+        <div className="max-h-full min-h-full overflow-y-scroll message-container flex flex-col">
           <MessageCard />
           <MessageCard />
           <MessageCard />
@@ -65,30 +65,6 @@ export default function OnlineBar() {
           <MessageCard />
           <MessageCard />
           <MessageCard />
-        </div>
-        {/* groups */}
-        <div className="flex items-center justify-between my-3">
-          <h1 className="font-bold">Group</h1>
-          <Link to="/" className="text-sm text-gray-500">
-            See All
-          </Link>
-        </div>{" "}
-        <div className="flex-1  flex flex-col">
-          <div className="group-container max-h-[45%] min-h-[45%]  overflow-y-scroll">
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-            <MessageCard />
-          </div>
         </div>
       </div>
     </div>

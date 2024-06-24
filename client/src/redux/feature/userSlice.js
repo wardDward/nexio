@@ -56,12 +56,51 @@ export const resendEmailVerification = createAsyncThunk(
   }
 );
 
+export const countUnreadNotification = createAsyncThunk(
+  "user/countUnreadNotification",
+  async () => {
+    try {
+      const response = await axios.get("/api/unread_notification");
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+export const getNotification = createAsyncThunk(
+  "user/getNotification",
+  async () => {
+    try {
+      const response = await axios.get("/api/notification");
+      return response.data.notifications.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+export const readNotitication = createAsyncThunk(
+  "user/getNotification",
+  async () => {
+    try {
+      const response = await axios.get("/api/read_notification");
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+);
+
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
     user: {},
     authFlag: JSON.parse(localStorage.getItem("auth")) || null,
     isLoading: false,
+    notification_count: 0,
+    notifications: [],
     errorMessage: {},
   },
   reducers: {
@@ -71,6 +110,12 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.errorMessage = {};
     },
+    incrementNotification: (state) => {
+      state.notification_count++
+    },
+    clearNotification: (state) => {
+      state.notification_count = 0
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -117,9 +162,23 @@ const userSlice = createSlice({
       })
       .addCase(resendEmailVerification.rejected, (state) => {
         state.isLoading = false;
+      })
+      .addCase(countUnreadNotification.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(countUnreadNotification.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.notification_count = action.payload.unreadNotification;
+      })
+      .addCase(getNotification.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getNotification.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.notifications = action.payload;
       });
   },
 });
 
-export const { clearState } = userSlice.actions;
+export const { clearState,incrementNotification,clearNotification } = userSlice.actions;
 export default userSlice.reducer;

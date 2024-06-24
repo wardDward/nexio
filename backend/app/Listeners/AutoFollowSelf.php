@@ -35,6 +35,7 @@ class AutoFollowSelf
             DB::table('follower_user')->insert([
                 'user_id' => $user_info->id,
                 'follower_id' => $user_info->id,
+                'status' => 'self',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

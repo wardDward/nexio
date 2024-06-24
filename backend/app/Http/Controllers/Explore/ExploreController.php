@@ -17,7 +17,7 @@ class ExploreController extends Controller
     public function index()
     {
         $explores = Explore::with(['users'])
-            ->orderBy('created_at', 'desc')->paginate(6);
+            ->orderBy('created_at', 'desc')->paginate(12);
 
         return ExploreResource::collection($explores);
     }

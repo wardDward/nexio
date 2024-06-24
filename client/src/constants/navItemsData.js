@@ -1,4 +1,8 @@
-export const navItemsData = (toggleSearch) => {
+export const navItemsData = (
+  toggleSearch,
+  toggleNotification,
+  notification_count
+) => {
   const navItems = [
     {
       path: "/",
@@ -13,7 +17,7 @@ export const navItemsData = (toggleSearch) => {
       onClick: toggleSearch,
     },
     {
-      path: "/test",
+      path: "/suggestions",
       icon: "PeopleAltOutlinedIcon",
       name: "Friends",
     },
@@ -22,7 +26,14 @@ export const navItemsData = (toggleSearch) => {
       icon: "ExploreOutlinedIcon",
       name: "Video",
     },
-
+    {
+      path: "/notification",
+      icon: "NotificationsNoneOutlinedIcon",
+      name: "Notification",
+      isButton: true,
+      onClick: toggleNotification,
+      count: notification_count,
+    },
   ];
 
   return { navItems };

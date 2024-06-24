@@ -27,8 +27,16 @@ export const getExplores = createAsyncThunk(
   "explores/getExplores",
   async (_, thunkApi) => {
     try {
-      const response = await axios.get("/api/explores");
-      return response.data.data;
+      const state = thunkApi.getState().explores;
+      const response = await axios.get(`/api/explores?page=${state.page}`);
+      const fetchedExplores = response.data.data;
+      if (fetchedExplores.length === 0) {
+        thunkApi.dispatch(setHasMoreExplore(false));
+        return state.explores;
+      } else {
+        thunkApi.dispatch(incrementExplorePage());
+        return [...state.explores, ...fetchedExplores];
+      }
     } catch (error) {
       thunkApi.dispatch(clearExplores());
       console.log(error);
@@ -36,16 +44,23 @@ export const getExplores = createAsyncThunk(
   }
 );
 
+export const loadMoreExplore = createAsyncThunk(
+  "explores/loadMoreExplore",
+  async (_, thunkApi) => {
+    await thunkApi.dispatch(getExplores());
+  }
+);
+
 export const specificExplores = createAsyncThunk(
   "explores/specificExplores",
   async (data, thunkApi) => {
-    console.log(data);
+    // console.log(data);
     try {
       const response = await axios.get(
         `/api/explore_attachments/${data.firstSegment}/${data.path}`
       );
-
-      console.log(response);
+      // console.log(response);
+      return response.data.data;
     } catch (error) {
       console.error(error);
       thunkApi.dispatch(clearExplores());
@@ -57,14 +72,23 @@ export const specificExplores = createAsyncThunk(
 const exploreSlice = createSlice({
   name: "explores",
   initialState: {
+    explore: {},
     explores: [],
     isLoadingStoring: false,
     isLoadingfetching: false,
+    page: 1,
+    hasMoreExplores: true,
     errorMesssage: [],
   },
   reducers: {
     clearExplores: (state) => {
-      state.explores = [];
+      state.errorMesssage = [];
+    },
+    setHasMoreExplore: (state, action) => {
+      state.hasMoreExplores = action.payload;
+    },
+    incrementExplorePage: (state) => {
+      state.page++;
     },
   },
   extraReducers: (builder) => {
@@ -86,9 +110,17 @@ const exploreSlice = createSlice({
       .addCase(getExplores.fulfilled, (state, action) => {
         state.isLoadingfetching = false;
         state.explores = action.payload;
+      })
+      .addCase(specificExplores.pending, (state) => {
+        state.isLoadingfetching = true;
+      })
+      .addCase(specificExplores.fulfilled, (state, action) => {
+        state.isLoadingfetching = false;
+        state.explore = action.payload;
       });
   },
 });
 
-export const { clearExplores } = exploreSlice.actions;
+export const { clearExplores, incrementExplorePage, setHasMoreExplore } =
+  exploreSlice.actions;
 export default exploreSlice.reducer;

@@ -1,12 +1,14 @@
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import { specificExplores } from "../../redux/feature/exploreSlice";
+import ViewExploreCarousel from "./ViewExploreCarousel";
 
 export default function ViewExplore({ closeModal }) {
   const dispatch = useDispatch();
   const location = useLocation();
+  const { explore } = useSelector((state) => state.explores);
 
   const segments = location.search.substring(5 + 1).split("/");
   const path = segments.slice(1).join("/");
@@ -27,6 +29,7 @@ export default function ViewExplore({ closeModal }) {
     dispatch(specificExplores({ firstSegment, path }));
   }, [dispatch, firstSegment, path]);
 
+
   return (
     <>
       <div className="fixed inset-0 bg-black/70 z-[9999]"></div>
@@ -38,11 +41,8 @@ export default function ViewExplore({ closeModal }) {
       </div>
       <div className="fixed top-[55%] lg:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  bg-white w-full md:w-[95%] xl:w-[60%] h-[80%] z-[99999999] flex flex-wrap">
         <div className="border-r-[1px] w-full md:w-[60%] flex-grow h-full overfloww-hidden flex justify-center items-center relative">
-          <img
-            src="https://plus.unsplash.com/premium_photo-1669234308292-f5fc637ee1db?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            className="h-full w-full object-contain"
-            alt=""
-          />
+          <ViewExploreCarousel explore={explore} />
+        
         </div>
         <div className="w-full md:w-[40%] hidden md:block">
           <div className="flex flex-col">
@@ -55,19 +55,24 @@ export default function ViewExplore({ closeModal }) {
                     alt=""
                   />
                 </a>
-                <a
-                  href="#"
+                <Link
+                  to="/"
                   className="text-[13px] font-medium ml-2 hover:opacity-[0.50]"
                 >
-                  Edward
-                </a>
+                  {explore.author?.name}
+                </Link>
               </div>
-              <a href="#" className="text-sm font-medium text-blue-500 hover:font-bold">Follow</a>
+              <a
+                href="#"
+                className="text-sm font-medium text-blue-500 hover:font-bold"
+              >
+                Follow
+              </a>
             </div>
           </div>
           <div className="flex flex-col bg-red-50 overflow-y-scroll h-[90%] commnent-container">
-                test
-            </div>
+            test
+          </div>
         </div>
       </div>
     </>

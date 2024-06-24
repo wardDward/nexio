@@ -3,21 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExploreResource;
 use App\Models\Explore;
 use App\Models\ExploreAttachment;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ExploreAttachmentController extends Controller
 {
     public function view_explore($id, $path)
     {
+        $explore = Explore::with(['users'])->find($id);
 
-        $explore = Explore::with(['users'])->where('id', $id);
-        $explore_attachment = ExploreAttachment::where('explore_id', $id)->where('attachment', $path)->firstOrFail();
-
-        return response()->json([
-            "explore" => $explore,
-            "explore_attachment" => $explore_attachment
-        ], 200);
+        return new ExploreResource($explore);   
+      
     }
 }

@@ -25,23 +25,25 @@ export default function NewsFeed() {
       threshold: 0.02,
     });
 
-    observer.observe(sentinelRef.current);
+    if (sentinelRef.current) {
+      observer.observe(sentinelRef.current);
+    }
 
     return () => {
       if (observer) {
         observer.disconnect();
-        console.log("Observer disconnected");
       }
     };
   }, [dispatch]);
 
   return (
+  <>
     <div className="w-full flex flex-col items-center p-5 bg-white">
       <StorySlider />
       <CreatePostCard />
       <div className="mt-[10px] w-full lg:w-[60%] xl:w-[40%] flex justify-center flex-col ">
         {posts.map((post) => (
-          <PostCard post={post} key={`${post.id}_${uuidv4()}`} />
+          <PostCard post={post} key={`${post.id}_${uuidv4()}`}/>
         ))}
         {isLoading && (
           <div className="flex justify-center items-center">
@@ -61,5 +63,6 @@ export default function NewsFeed() {
         </div>
       )}
     </div>
+  </>
   );
 }
